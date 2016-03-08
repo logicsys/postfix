@@ -1,10 +1,10 @@
 # encoding: utf-8
 #
-# Author:: Joshua Timberman(<joshua@chef.io>)
+# Author:: James Le Cuirot(<james.le-cuirot@yakara.com>)
 # Cookbook Name:: postfix
-# Recipe:: sasl_auth
+# Recipe:: sasldb
 #
-# Copyright 2009-2014, Chef Software, Inc.
+# Copyright 2009-2015, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,19 +22,8 @@
 include_recipe 'postfix::_common'
 include_recipe 'postfix::sasl_common'
 
-execute 'postmap-sasl_passwd' do
-  command "postmap #{node['postfix']['sasl_password_file']}"
-  environment 'PATH' => "#{ENV['PATH']}:/opt/omni/bin:/opt/omni/sbin" if platform_family?('omnios')
-  action :nothing
-end
-
-template node['postfix']['sasl_password_file'] do
-  sensitive true
-  source 'sasl_passwd.erb'
-  owner 'root'
-  group node['root_group']
-  mode 0400
-  notifies :run, 'execute[postmap-sasl_passwd]', :immediately
-  notifies :restart, 'service[postfix]'
-  variables(settings: node['postfix']['sasl'])
+node['postfix']['sasldb']['users'].each do |email, password|
+  postfix_sasldb_user email do
+    password password
+  end
 end

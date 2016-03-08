@@ -40,6 +40,28 @@ suites:
   run_list:
   - recipe[postfix::server]
 
+- name: sasldb
+  run_list:
+  - recipe[postfix::server]
+  - recipe[postfix::sasldb]
+  attributes:
+    postfix:
+      sasl_conf:
+        pwcheck_method: auxprop
+        auxprop_plugin: sasldb
+        mech_list:
+          - PLAIN
+          - LOGIN
+          - CRAM-MD5
+          - DIGEST-MD5
+      sasldb:
+        users:
+          joe@example.com: foobarbaz
+          bob@example.com: bazbarfoo
+        group: mail
+  excludes:
+    - omnios-r151014 # No saslpasswd2?
+
 - name: sasl_auth
   run_list:
   - recipe[postfix::sasl_auth]

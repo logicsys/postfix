@@ -120,6 +120,15 @@ end
 # Master.cf attributes
 default['postfix']['master']['submission'] = false
 
+# SASL smtpd.conf attributes
+default['postfix']['sasl_conf']['pwcheck_method'] = 'saslauthd'
+default['postfix']['sasl_conf']['mech_list'] = %w(plain login)
+
+# sasldb attributes
+default['postfix']['sasldb']['users'] = {}
+default['postfix']['sasldb']['group'] = 'postfix'
+default['postfix']['sasldb']['path'] = '/etc/sasldb2'
+
 # OS Aliases
 case node['platform']
 when 'freebsd'
