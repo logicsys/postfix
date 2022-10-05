@@ -8,6 +8,7 @@ require 'chef/resource/lwrp_base'
 class Chef
   class Resource
     class PostfixSasldbUser < Chef::Resource::LWRPBase
+      provides :postfix_sasldb_user
       resource_name :postfix_sasldb_user
 
       attr_reader :username, :domain
